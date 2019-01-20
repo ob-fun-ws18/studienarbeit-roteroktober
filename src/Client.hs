@@ -13,8 +13,7 @@ where
 
 import Network.Socket
 import System.IO
-import Control.Concurrent (forkIO, forkFinally)
-import Control.Concurrent (ThreadId)
+import Control.Concurrent (forkIO, forkFinally,ThreadId)
 import Control.Concurrent.Chan
 import Data.IORef
 import System.Random
@@ -44,7 +43,7 @@ client qsem1 qsem2 field coords play allowed2fire vars bool_left = do
                                                     "0" -> clientloop 0 qsem1 qsem2 playerfield coords server allowed2fire vars bool_left -- Gegner darf zuerst feuern
                                                     "1" -> clientloop 1 qsem1 qsem2 playerfield coords server allowed2fire vars bool_left -- Spieler darf zuerst feuern
 -- | Implements the logic of the main game
-clientloop :: Int -> QSem -> QSem -> [Char] -> IORef [(Int,Int)] -> Socket -> IORef Bool -> [IORef [(Int,Int)]] -> IORef Bool -> IO ()
+clientloop :: Int -> QSem -> QSem -> String -> IORef [(Int,Int)] -> Socket -> IORef Bool -> [IORef [(Int,Int)]] -> IORef Bool -> IO ()
 clientloop 0 sem1 sem2 field downpoint server allowed2fire [nieten_left , treffer_left , versenkt_left , nieten_right , treffer_right , versenkt_right] bool_left = do
                                                    wait server nieten_left treffer_left versenkt_left bool_left
                                                    fire sem1 sem2 downpoint server nieten_right treffer_right versenkt_right allowed2fire
@@ -64,7 +63,7 @@ fire qsem1 qsem2 downpoint server nieten_right treffer_right versenkt_right allo
                 send server str
                 response <- recv server 4000
                 let lst = splitRegex (mkRegex " ") response
-                case lst !! 0 of
+                case head lst of
                      "0" -> do
                               let t = tuple (tail.init$ (lst !! 1))
                               tt <- readIORef nieten_right
@@ -89,7 +88,7 @@ fire qsem1 qsem2 downpoint server nieten_right treffer_right versenkt_right allo
                               writeIORef allowed2fire True
                               signalQSem qsem2
                               fire qsem1 qsem2 downpoint server nieten_right treffer_right versenkt_right allowed2fire
-              where tuple :: [Char] -> (Int,Int)
+              where tuple :: String -> (Int,Int)
                     tuple [a,b,c]  | a == '1' && b == '0' = (10,digitToInt c)
                                    | b == '1' && c == '0' = (digitToInt a,10)
                     tuple [a,b,c,d] = (10,10)
@@ -119,7 +118,7 @@ wait server nieten_left treffer_left versenkt_left bool_left = do
                                                                                      writeIORef versenkt_left (tt ++ lst_treffer)
                                                                                      writeIORef bool_left True
                                                                                      wait server nieten_left treffer_left versenkt_left bool_left
-                                                                 where tuple :: [Char] -> (Int,Int)
+                                                                 where tuple :: String -> (Int,Int)
                                                                        tuple [a,b,c]  | a == '1' && b == '0' = (10,digitToInt c)
                                                                                       | b == '1' && c == '0' = (digitToInt a,10)
                                                                        tuple [a,b,c,d] = (10,10)
@@ -135,19 +134,15 @@ fieldsetting qsem1 qsem2 field coords play = do
                                                                                                        return ()
                                                else do
                                                       [(x1,y1),(x2,y2)] <- readIORef coords
-                                                      if (x1 /= x2 && y1 /= y2) then do
+                                                      if x1 /= x2 && y1 /= y2 then do
                                                                                        signalQSem qsem2
                                                                                        fieldsetting qsem1 qsem2 field coords play 
                                                       else do
                                                             let xs = [(x,y) | x <- [x1..x2], y <- [y1..y2]]
-                                                            if (length xs > 5 || length xs == 1) then do
+                                                            if (length xs > 5 || length xs == 1) || check' xs (tail ships) then do
                                                                                                         signalQSem qsem2
                                                                                                         fieldsetting qsem1 qsem2 field coords play
                                                             else do
-                                                                   if check' xs (tail ships) then do
-                                                                                                     signalQSem qsem2
-                                                                                                     fieldsetting qsem1 qsem2 field coords play
-                                                                   else do
                                                                           let set = forbiddentuples (tail ships)
                                                                           if memberInSet xs set then do
                                                                                                      signalQSem qsem2
@@ -165,8 +160,7 @@ memberInSet :: [(Int,Int)] -> Set (Int,Int) -> Bool
 memberInSet xs set = or [Set.member a set | a <- xs]
 -- | Checks if the maximal number of fields is valid
 check' :: [(Int,Int)] -> [[(Int,Int)]] -> Bool
-check' xs xss = if check'' xsss then True
-                else False
+check' xs xss = check'' xsss
                 where xsss = [t | t <- xss, length t == length xs]
                       check'' :: [[(Int,Int)]] -> Bool
                       check'' [] = False

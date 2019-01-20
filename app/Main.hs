@@ -1,9 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
   import Server
   import Gui
-  
-  {-# LANGUAGE OverloadedStrings #-}
 
   import qualified Graphics.UI.Threepenny as UI
   import Graphics.UI.Threepenny.Core
