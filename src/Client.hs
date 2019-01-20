@@ -1,3 +1,4 @@
+-- | The Client module
 module Client( 
       client,
       clientloop,
@@ -26,6 +27,7 @@ import Data.Char
 
 
 --        Qsem1   Qsem2   Feld                   (Down),(UP)          Player button
+-- | The client that implements the clientside gamelogic
 client :: QSem -> QSem -> IORef [[(Int,Int)]] -> IORef [(Int,Int)] -> IORef Bool -> IORef Bool -> [IORef [(Int,Int)]] -> IORef Bool -> IO ()
 client qsem1 qsem2 field coords play allowed2fire vars bool_left = do
                                          fieldsetting qsem1 qsem2 field coords play -- Feldbelegung
@@ -41,7 +43,7 @@ client qsem1 qsem2 field coords play allowed2fire vars bool_left = do
                                          case wer_faengt_an of
                                                     "0" -> clientloop 0 qsem1 qsem2 playerfield coords server allowed2fire vars bool_left -- Gegner darf zuerst feuern
                                                     "1" -> clientloop 1 qsem1 qsem2 playerfield coords server allowed2fire vars bool_left -- Spieler darf zuerst feuern
-
+-- | Implements the logic of the main game
 clientloop :: Int -> QSem -> QSem -> [Char] -> IORef [(Int,Int)] -> Socket -> IORef Bool -> [IORef [(Int,Int)]] -> IORef Bool -> IO ()
 clientloop 0 sem1 sem2 field downpoint server allowed2fire [nieten_left , treffer_left , versenkt_left , nieten_right , treffer_right , versenkt_right] bool_left = do
                                                    wait server nieten_left treffer_left versenkt_left bool_left
@@ -52,7 +54,7 @@ clientloop 1 sem1 sem2 field downpoint server allowed2fire [nieten_left , treffe
                                                    fire sem1 sem2 downpoint server nieten_right treffer_right versenkt_right allowed2fire
                                                    wait server nieten_left treffer_left versenkt_left bool_left
                                                    clientloop 1 sem1 sem2 field downpoint server allowed2fire [nieten_left , treffer_left , versenkt_left , nieten_right , treffer_right , versenkt_right] bool_left
-
+-- | Is called when the player is allowed to fire
 fire :: QSem -> QSem -> IORef [(Int,Int)] -> Socket -> IORef [(Int,Int)] -> IORef [(Int,Int)] -> IORef [(Int,Int)] -> IORef Bool -> IO ()
 fire qsem1 qsem2 downpoint server nieten_right treffer_right versenkt_right allowed2fire = do
                 writeIORef allowed2fire True
@@ -92,7 +94,7 @@ fire qsem1 qsem2 downpoint server nieten_right treffer_right versenkt_right allo
                                    | b == '1' && c == '0' = (digitToInt a,10)
                     tuple [a,b,c,d] = (10,10)
                     tuple [a,b] = (digitToInt$a,digitToInt$b)
-
+-- | Is called when the player is waiting for the enemeys choice
 wait :: Socket -> IORef [(Int,Int)] -> IORef [(Int,Int)] -> IORef [(Int,Int)] -> IORef Bool -> IO ()
 wait server nieten_left treffer_left versenkt_left bool_left = do
                                                                  response <- recv server 4000
@@ -122,7 +124,7 @@ wait server nieten_left treffer_left versenkt_left bool_left = do
                                                                                       | b == '1' && c == '0' = (digitToInt a,10)
                                                                        tuple [a,b,c,d] = (10,10)
                                                                        tuple [a,b] = (digitToInt$a,digitToInt$b)
-
+-- | Is called at the beginning of the game
 fieldsetting :: QSem -> QSem -> IORef [[(Int,Int)]] -> IORef [(Int,Int)] -> IORef Bool -> IO ()
 fieldsetting qsem1 qsem2 field coords play = do
                                                waitQSem qsem1    -- wird entsperrt bei MouseUP Event und Play-Click
@@ -154,13 +156,14 @@ fieldsetting qsem1 qsem2 field coords play = do
                                                                                  writeIORef field (ships ++ [xs])
                                                                                  signalQSem qsem2
                                                                                  fieldsetting qsem1 qsem2 field coords play
-
+-- | Creates a Set of forbidden fields
 forbiddentuples :: [[(Int,Int)]] -> Set (Int,Int)
 forbiddentuples xss = Set.fromList . concat $ [[(a-1,b),(a,b-1),(a+1,b),(a,b+1),(a,b)] | xs <- xss, (a,b) <- xs]
 
+-- | Checks if the players choice is a member of the Set of forbidden fields
 memberInSet :: [(Int,Int)] -> Set (Int,Int) -> Bool
 memberInSet xs set = or [Set.member a set | a <- xs]
-
+-- | Checks if the maximal number of fields is valid
 check' :: [(Int,Int)] -> [[(Int,Int)]] -> Bool
 check' xs xss = if check'' xsss then True
                 else False
