@@ -97,7 +97,7 @@ wait :: Socket -> IORef [(Int,Int)] -> IORef [(Int,Int)] -> IORef [(Int,Int)] ->
 wait server nieten_left treffer_left versenkt_left bool_left = do
                                                                  response <- recv server 4000
                                                                  let lst = splitRegex (mkRegex " ") response
-                                                                 case lst !! 0 of
+                                                                 case head lst of   -- lst !! 0
                                                                            "0" -> do
                                                                                      let t = tuple (tail.init$ (lst !! 1))
                                                                                      tt <- readIORef nieten_left
