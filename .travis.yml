@@ -21,26 +21,6 @@ addons:
   apt:
     packages:
       - libgmp-dev
-      - base 
-      - network
-      - bytestring ==0.10.*
-      - threepenny-gui == 0.8.3.0
-      - mtl
-      - random >=1.0
-      - array
-      - atomic-primops
-      - exceptions
-      - monad-control
-      - stm
-      - transformers
-      - containers
-      - syb
-      - ghc-prim
-      - regex-base >=0.93
-      - semigroups
-      - regex-posix >=0.95.1
-      - parsec
-      - regex-compat
 
 install:
 # Build dependencies
