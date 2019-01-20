@@ -21,6 +21,7 @@ import Data.Set as Set
 import Data.List
 import Text.Regex
 import Data.Char
+import Data.Ord
 
 bars  = 4
 beats = 4
@@ -240,11 +241,11 @@ drawanzeige anzeige lstxxx = do
                                anzeige # UI.fillText ("x " ++ (show (lstxxx !! 0))) (155,25)
                                anzeige # UI.fillText ("x " ++ (show (lstxxx !! 1))) (155,50)
                                anzeige # UI.fillText ("x " ++ (show (lstxxx !! 2))) (155,75)
-                               anzeige # UI.fillText ("x " ++ (show (lstxxx !! 3))) (155,100)
+                               anzeige # UI.fillText ("x " ++ show (lstxxx !! 3)) (155,100)
 
 anzeigeCalcIndezes :: [[(Int,Int)]] -> [Int] -> [Int]
 anzeigeCalcIndezes field [a,b,c,d] = anzeigeCalcIndezes' xss [a,b,c,d]
-                              where xxx = reverse $ sort $ length <$> field
+                              where xxx = sortOn Data.Ord.Down (length <$> field)
                                     xss = [length $ Prelude.filter (==i) xxx | i<-[5,4,3,2]]
                                     anzeigeCalcIndezes' :: [Int] -> [Int] -> [Int]
                                     anzeigeCalcIndezes' [a5,a4,a3,a2] [b5,b4,b3,b2] = [b5-a5 , b4-a4 , b3-a3 , b2-a2]
@@ -269,5 +270,5 @@ calcy i = 1 + result
           where result = i `div` 30
 
 rer :: [UI ()] -> UI ()
-rer (tt:[]) = tt
+rer [tt] = tt
 rer (tt:xs) = do tt; rer xs

@@ -8,14 +8,14 @@ where
 
 import Network.Socket
 import System.IO
-import Control.Concurrent (forkIO, forkFinally)
-import Control.Concurrent (ThreadId)
+import Control.Concurrent (forkIO, forkFinally,ThreadId)
 import Control.Concurrent.Chan
 import Data.IORef
 import System.Random
 import Control.Concurrent.QSem
 import Data.Set as Set
 import Data.List
+import Data.Maybe
 import Text.Regex
 import Data.Char
 
@@ -38,24 +38,24 @@ server = do
           send sock2 "0"
           gameloop player1 player2 sock1 sock2
 
-gameloop :: [Char] -> [Char] -> Socket -> Socket -> IO ()
+gameloop :: String -> String -> Socket -> Socket -> IO ()
 gameloop str1 str2 sock1 sock2 = do
                                     field2 <- checkfireplayer1 str1 str2 sock1 sock2
                                     field1 <- checkfireplayer2 str1 str2 sock1 sock2
                                     --putStrLn (field2 ++ "\n +++++ \n" ++ field1)
                                     gameloop field1 field2 sock1 sock2
 
-checkfireplayer1 :: [Char] -> [Char] -> Socket -> Socket -> IO [Char]
+checkfireplayer1 :: String -> String -> Socket -> Socket -> IO String
 checkfireplayer1 str1 str2 sock1 sock2 = do
                                  fire1 <- recv sock1 4000
-                                 if matchRegex (mkRegex fire1) str2 /= Nothing
+                                 if isJust (matchRegex (mkRegex fire1) str2)
                                   then do
-                                        let field2 = concat $ (splitRegex (mkRegex ("\\("++ (init.tail$fire1) ++"\\)")) str2)
-                                        if matchRegex (mkRegex "\\[\\]") field2 /= Nothing
+                                        let field2 = concat (splitRegex (mkRegex ("\\("++ (init.tail$fire1) ++"\\)")) str2)
+                                        if isJust (matchRegex (mkRegex "\\[\\]") field2)
                                           then do 
                                                  send sock1 ("2 " ++ fire1)
                                                  send sock2 ("2 " ++ fire1)
-                                                 let newfield2 = concat $ (splitRegex (mkRegex "\\[\\]") field2)
+                                                 let newfield2 = concat (splitRegex (mkRegex "\\[\\]") field2)
                                                  checkfireplayer1 str1 newfield2 sock1 sock2
                                         else do
                                                  send sock1 ("1 " ++ fire1)
@@ -66,17 +66,17 @@ checkfireplayer1 str1 str2 sock1 sock2 = do
                                          send sock2 ("0 " ++ fire1)
                                          return str2
 
-checkfireplayer2 :: [Char] -> [Char] -> Socket -> Socket -> IO [Char]
+checkfireplayer2 :: String -> String -> Socket -> Socket -> IO String
 checkfireplayer2 str1 str2 sock1 sock2 = do
                                         fire2 <- recv sock2 4000
-                                        if matchRegex (mkRegex fire2) str1 /= Nothing
+                                        if isJust (matchRegex (mkRegex fire2) str1)
                                          then do
-                                             let field1 = concat $ (splitRegex (mkRegex ("\\("++( init.tail$fire2 )++"\\)")) str1)
-                                             if matchRegex (mkRegex "\\[\\]") field1 /= Nothing
+                                             let field1 = concat (splitRegex (mkRegex ("\\("++( init.tail$fire2 )++"\\)")) str1)
+                                             if Data.Maybe.isJust (matchRegex (mkRegex "\\[\\]") field1)
                                                  then do 
                                                         send sock2 ("2 " ++ fire2)
                                                         send sock1 ("2 " ++ fire2)
-                                                        let newfield1 = concat $ (splitRegex (mkRegex "\\[\\]") field1)
+                                                        let newfield1 = concat (splitRegex (mkRegex "\\[\\]") field1)
                                                         checkfireplayer2 newfield1 str2 sock1 sock2
                                               else do
                                                       send sock2 ("1 " ++ fire2)
