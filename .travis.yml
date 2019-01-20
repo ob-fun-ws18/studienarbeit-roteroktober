@@ -32,8 +32,6 @@ script:
 - mv `stack path --local-doc-root` docs/doc
 - stack bench --benchmark-arguments="-o docs/report.html"
 - mv `stack path --local-hpc-root` docs/hpc
-- travis_retry curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh \
-    | sh -s .
 
 deploy:
   provider: pages # speziell für GitHub Pages
