@@ -1,5 +1,8 @@
 # Schiffe Versenken
 
-Wird in Haskell von Sinning Fabian und Schmidt Dominik geschrieben
+Build
 
+
+Entwickelt von Fabian Sinning und Dominik Schmidt in Haskell. Die Regeln können auf de.wikipedia.org/wiki/Schiffe_versenken
+nachgelesen werden.
 
