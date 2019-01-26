@@ -28,7 +28,7 @@ install:
 script:
 # Build the package, its tests and run the tests
 - stack --no-terminal test --haddock --no-haddock-deps --coverage
-- mv `stack path --local-doc-root` docs/doc
+- mv `stack path --local-doc-root` docs
 - stack bench --benchmark-arguments="-o docs/report.html"
 - mv `stack path --local-hpc-root` docs/hpc
 
