@@ -1,0 +1,121 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 944ea85b1c6264399f4a8bc0acf8cfb3378334cc04bd24b41a757aa2e6911ae4
+
+name:           roterOktober
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/Studienarbeit#readme>
+homepage:       https://github.com/https://github.com/ob-fun-ws18/studienarbeit-roteroktober#readme
+bug-reports:    https://github.com/https://github.com/ob-fun-ws18/studienarbeit-roteroktober/issues
+author:         Fabian Sinning, Dominik Schmidt
+maintainer:     schmid82@hm.edu
+copyright:      2019 Fabian Sinning, Dominik Schmidt
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/https://github.com/ob-fun-ws18/studienarbeit-roteroktober
+
+library
+  exposed-modules:
+      Client
+      Gui
+      Server
+  other-modules:
+      Paths_roterOktober
+  hs-source-dirs:
+      src
+  build-depends:
+      array
+    , atomic-primops
+    , base
+    , bytestring ==0.10.*
+    , containers
+    , exceptions
+    , ghc-prim
+    , monad-control
+    , mtl
+    , network
+    , parsec
+    , random >=1.0
+    , regex-base >=0.93
+    , regex-compat
+    , regex-posix >=0.95.1
+    , semigroups
+    , stm
+    , syb
+    , threepenny-gui ==0.8.3.0
+    , transformers
+  default-language: Haskell2010
+
+executable Studienarbeit-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_roterOktober
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Studienarbeit
+    , array
+    , atomic-primops
+    , base
+    , bytestring ==0.10.*
+    , containers
+    , exceptions
+    , ghc-prim
+    , monad-control
+    , mtl
+    , network
+    , parsec
+    , random >=1.0
+    , regex-base >=0.93
+    , regex-compat
+    , regex-posix >=0.95.1
+    , semigroups
+    , stm
+    , syb
+    , threepenny-gui ==0.8.3.0
+    , transformers
+  default-language: Haskell2010
+
+test-suite Studienarbeit-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_roterOktober
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Studienarbeit
+    , array
+    , atomic-primops
+    , base
+    , bytestring ==0.10.*
+    , containers
+    , exceptions
+    , ghc-prim
+    , monad-control
+    , mtl
+    , network
+    , parsec
+    , random >=1.0
+    , regex-base >=0.93
+    , regex-compat
+    , regex-posix >=0.95.1
+    , semigroups
+    , stm
+    , syb
+    , threepenny-gui ==0.8.3.0
+    , transformers
+  default-language: Haskell2010
