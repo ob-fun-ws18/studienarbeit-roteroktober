@@ -13,7 +13,7 @@ Das Spiel ist dafür gedacht, dass es von zwei Spielern über ein Netzwerk gespi
 
 ## Spielstart
 
-    stack build Studienarbeit-exe
+    stack exec Studienarbeit-exe
     
 Der Server wird nun gestartet und ist unter 127.0.0.1:8023 erreichbar. 
 
