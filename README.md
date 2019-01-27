@@ -17,6 +17,6 @@ Das Spiel ist dafür gedacht, dass es von zwei Spielern über ein Netzwerk gespi
     
 Der Server wird nun gestartet und ist unter 127.0.0.1:8023 erreichbar. 
 
-## Spielregeln und -verlauf
+## Spielverlauf
 
 Nachdem das Spiel im Browser aufgerufen wurde können die Schiffe platziert werden. Danach kann das Spiel mit einem Klick auf *play* gestartet werden. *reset* lässt den Spieler seine Schiffe erneut platzieren. Haben beide Spieler ihre Schiffe platziert, kann begonnen werden. 
