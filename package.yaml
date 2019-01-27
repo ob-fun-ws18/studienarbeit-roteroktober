@@ -1,10 +1,10 @@
 name:                Studienarbeit
 version:             0.1.0.0
-github:              "githubuser/Studienarbeit"
+github:              "https://github.com/ob-fun-ws18/studienarbeit-roteroktober"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+author:              "Fabian Sinning, Dominik Schmidt"
+maintainer:          "schmid82@hm.edu"
+copyright:           "2019 Fabian Sinning, Dominik Schmidt"
 
 extra-source-files:
 - README.md
